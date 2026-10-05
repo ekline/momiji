@@ -5,12 +5,29 @@ design and implementation work; documenting a requirement does not complete it.
 
 ## 1. Model and behavioral examples
 
-- [ ] Define entity boundaries, UUID references, and cross-source identity rules.
+Tranche 1 documentation is in [the data model](data-model.md) and
+[the model scenarios](model-scenarios.md). The items checked below are
+documentation only. The model itself has not been reviewed or frozen.
+
+- [x] Document candidate tasks, occurrences, activities, contributions, assessments,
+      planning entries, transitions, and deadline changes, with their invariants.
+- [x] Walk the daily stretch, gym/marathon, and insurance/bookkeeping scenarios,
+      plus the additional review checks.
+- [x] Document the lapse-strategy compatibility matrix, successor-task supersession,
+      and same-identity deadline changes.
+- [ ] Review tranche 1 and settle the decisions that block an initial schema draft:
+      occurrence identity (Q1), the date and time-zone model (Q3), and record shapes
+      for corrections, skips, transitions, and attribution (Q5).
+- [ ] Settle or explicitly defer keep-one semantics and credit allocation (Q2),
+      deadline/period interaction (Q4), contribution measures (Q6), supersession
+      graph and follow policies (Q7), and parent cardinality and dependency
+      enforcement (Q8).
+- [ ] Define entity boundaries, UUID references, and cross-source identity rules (Q9).
 - [ ] Separate access identities, personae, source membership, and credentials.
 - [ ] Define ownership, attention requests, claiming, dismissal, and personal overlays.
 - [ ] Define organizational hierarchy separately from task decomposition/dependencies.
-- [ ] Define one-time completion, recurring commitments, and completion corrections.
-- [ ] Define daily and weekly recurrence, target ranges, and missed-period policies.
+- [ ] Finalize one-time completion, recurring commitments, and correction/retraction.
+- [ ] Finalize recurrence strategies, target ranges, and lapse strategies.
 - [ ] Define planning horizons, deadlines, milestones, and daily selection separately.
 - [ ] Resolve time zones, week boundaries, travel, and daylight-saving transitions.
 - [ ] Define retirement/deletion and the treatment of historical references.
@@ -18,8 +35,9 @@ design and implementation work; documenting a requirement does not complete it.
 
 | Example | Behavior to demonstrate |
 |---|---|
-| `SELF : FIT : stretch` | Daily completion persists in history; commitment remains; exercise both missed-period policies |
-| Gym 2–3 times weekly | Flexible visit dates; distinguish minimum and upper target; define period rollover |
+| `SELF : FIT : stretch` | Drafted in scenario A: late recording, skip, three lapse strategies, weekly-to-daily successor |
+| Gym 2–3 times weekly | Drafted in scenario B: minimum versus preferred, one session serving two objectives, duplicate credit |
+| Insurance payment and bookkeeping | Drafted in scenario C: occurrence dependency, deadline extension, ongoing parents |
 | Make an appointment | One-time completion; distinguish booking from a subsequent appointment task |
 | `COMM : NEWS : publish issue` | Milestone, supporting tasks, compact title, reorganization without changing identity |
 | Shared family appointment | Several attention recipients; one claimant; losing claim does not become reassignment |
@@ -32,7 +50,8 @@ design and implementation work; documenting a requirement does not complete it.
 
 - [ ] Draft the initial protobuf generation and worked `.txtpb` fixtures.
 - [ ] Choose proto syntax/edition and Rust tooling after checking txtpb support.
-- [ ] Decide file granularity and layout for tasks, nodes, completions, and overlays.
+- [ ] Decide file granularity and layout for tasks, nodes, activities, contributions,
+      and overlays (Q10; individual activity files are the current leaning).
 - [ ] Define deterministic formatting and comment/unknown-field round-trip behavior.
 - [ ] Define model-version discovery, client compatibility, and refusal of unsafe writes.
 - [ ] Specify explicit migrations and how they are reviewed and recovered.

@@ -3,7 +3,9 @@
 Initial discussion checkpoint: 2026-10-04.
 
 This records requirements and design directions before implementation. Proposed
-details below remain subject to worked examples and schema review.
+details below remain subject to worked examples and schema review. The candidate
+entities, invariants, and open questions are in [the data model](data-model.md),
+and worked transitions are in [the model scenarios](model-scenarios.md).
 
 ## Purpose and workflows
 
@@ -35,21 +37,59 @@ Use UUIDs for independently referenced entities. Names, abbreviations, hierarchy
 paths, and Git remote URLs must not be reference identities. Entity boundaries,
 cross-repository references, and identity mappings still need schema design.
 
-## Completion and recurrence
+## Expectations, activity, and recurrence
 
-Distinguish a task or persistent commitment from records of performing it.
-Completing a one-time task finishes that task. Completing a recurring commitment
-records an occurrence without retiring the commitment.
+Record activity once. Allow it to contribute to multiple expectations. Organize and
+assess expectations without duplicating the underlying activity. Intent is separate
+from experience:
 
-Support daily recurrence and targets such as gym visits 2–3 times per week.
-A weekly target need not imply particular weekdays. Support both missed periods
-that lapse and obligations that carry forward; their exact accumulation and
-completion-allocation rules remain open. The minimum and optional upper target
-must be considered explicitly rather than silently reducing a range to one number.
+- **Tasks** express intentions or responsibilities.
+- **Occurrences** are particular obligations or opportunities of a task.
+- **Activities** record what actually happened, including unplanned activity.
+- **Contributions** credit an activity to an occurrence.
+- **Assessments** derive progress and satisfaction, and are not stored as facts.
 
-Retirement, deletion, skipping, completion correction, and recurrence-policy
-changes require distinct, explicit semantics. Time-zone, week-boundary, travel,
-and daylight-saving behavior remain open.
+One activity may contribute to several occurrences, such as a gym session that
+also serves a marathon plan. A contribution need not satisfy its target: one visit
+advances a two-visit weekly minimum. A contribution names its target occurrence
+explicitly, so late work can satisfy an earlier obligation. Activity time is kept
+separate from recording time. The ordinary checkbox creates these records together.
+
+There are three expectation modes:
+
+- **One-time work** completes and may be undated.
+- **Ongoing responsibility** stays active without a completion target.
+- **Recurring work** generates occurrences by an explicit strategy: calendar
+  periods, fixed elapsed intervals, or an interval after a qualifying completion.
+
+Recurring work states a minimum and an optional preferred target. Gym visits 2–3
+times per week means a minimum of 2 and a preferred 3, not a maximum of 3. A weekly
+target need not imply particular weekdays.
+
+Missed periods are handled by an explicit lapse strategy:
+
+- **Lapse:** missed periods are not carried forward.
+- **Keep one outstanding:** missed periods do not multiply the work owed.
+- **Accumulate:** each unsatisfied occurrence stays owed separately.
+
+Undefined combinations of generation and lapse strategy are rejected. Exact
+keep-one semantics remain open.
+
+Descriptive edits keep a task's identity. A substantive change to recurrence,
+satisfaction target, or lapse behavior creates a successor task that `supersedes`
+the old one. It takes effect at a chosen time, by default now, without waiting for
+a long period to end. Open occurrences are explicitly closed as superseded, kept
+outstanding, or allowed to finish before the transition. Partial periods are not
+prorated or marked as failures. Old occurrences remain interpretable by their
+original task. A deadline extension instead keeps the occurrence's identity and
+records both the old and new due values.
+
+Occurrence period, due date, earliest availability, and intended work day are
+distinct and optional. Passing a due date does not close an obligation.
+
+Retirement, deletion, skipping, and correction or retraction of activity require
+distinct, explicit semantics, and they must leave a trace. Time-zone,
+week-boundary, travel, and daylight-saving behavior remain open.
 
 ## Shared sources and private planning
 
@@ -78,8 +118,15 @@ Do not fix the semantic meaning of each path position. Proposed organizational
 nodes have stable IDs, names, abbreviations, and parent references. Persona
 inheritance from explicitly configured nodes is a proposal, not yet a settled rule.
 
-Organizational containment and task decomposition are different relationships.
-Moving an item between categories must not implicitly change completion behavior.
+Organizational containment, task decomposition, and dependency are different
+relationships. Moving an item between categories must not implicitly change
+completion behavior.
+
+Parent and child schedules and completion are independent by default. A parent view
+summarizes child dates and progress without inheriting them. An ongoing parent
+such as "Maintain the house" is not completed when its current children are.
+Operations on a subtree are explicit. Whether a task may have several parents is
+open.
 
 The proposed card renderer uses abbreviated paths and optional short titles,
 supports grouping and enough context to resolve ambiguity, and preserves the
@@ -102,9 +149,17 @@ conceptually distinct. Define compatibility before promising safe mixed-version
 editing. Unsupported features must be explained; personal overlays may represent
 some preferences, but cannot pretend to update an incapable shared source.
 
-One file per task/commitment and separate completion records is the current layout
-proposal. Decide formatting, comments, unknown-field preservation, reference
-integrity, deletion, and file granularity before freezing the format.
+Activity is stored separately from task definitions, and one activity never needs
+duplicated authoritative records to serve several tasks. Empty periods are not
+stored as negative records, and predictable future occurrences are not stored
+eagerly. Superseded expectation definitions must stay readable without consulting
+Git history. Derived caches are rebuildable, and lossy summarization of history is
+not a default.
+
+Individual activity files are the current leaning; partitioning by task or by
+source and period is the alternative under comparison. Decide formatting, comments,
+unknown-field preservation, reference integrity, occurrence addressing, deletion,
+and file granularity before freezing the format.
 
 ## Git synchronization and acceptance
 

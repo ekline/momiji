@@ -15,9 +15,11 @@ Getting the data model right is the first milestone.
 - Stable UUID references, flexible hierarchy, and configurable shorthand.
 - Multiple sources and data-model generations in one planning view.
 - Separate ownership, attention, persona, and personal planning information.
-- Recurring commitments with completion history and explicit missed-period policies.
+- Activity recorded once and credited to any number of expectations.
+- Recurring commitments with explicit targets and missed-period policies.
 
-See the [design checkpoint](docs/design.md) and [project backlog](docs/backlog.md).
+See the [design checkpoint](docs/design.md), [project backlog](docs/backlog.md),
+[candidate data model](docs/data-model.md), and [model scenarios](docs/model-scenarios.md).
 The checkpoint distinguishes agreed requirements from implementation proposals
 and unresolved questions; it is not a frozen schema.
 
